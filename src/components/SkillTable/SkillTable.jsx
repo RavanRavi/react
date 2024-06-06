@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -121,23 +122,72 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
   };
 
   return (
-    <Table data-testid="skill-table">
-      <TableHead>
-        <TableRow>
-          <TableCell data-testid="skill-table-header-cell">Skill</TableCell>
-          <TableCell data-testid="skill-table-header-cell">Rating</TableCell>
-          <TableCell data-testid="skill-table-header-cell">Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {filteredSkills?.length > 0 ? (
-          filteredSkills?.map((skill, index) => (
+    <Paper style={{ marginTop: "10px" }}>
+      <Table data-testid="skill-table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Skill</TableCell>
+            <TableCell>Rating</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {filteredSkills?.length > 0
+            ? filteredSkills?.map((skill, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <CustomTextField
+                      value={skill?.name}
+                      onChange={(e) =>
+                        handleChange(index, "name", e.target.value, true)
+                      }
+                      onBlur={(e) => handleBlur(index, "name", e.target.value)}
+                      error={skill.editing && errors[index]?.name}
+                      disabled={!skill.editing}
+                    />
+                    {skill.editing && errors[index]?.name && (
+                      <Tooltip title="Skill name is required" placement="top">
+                        <Info color="error" />
+                      </Tooltip>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <CustomTextField
+                      value={skill?.rating}
+                      onChange={(e) =>
+                        handleChange(index, "rating", e.target.value, true)
+                      }
+                      onBlur={(e) =>
+                        handleBlur(index, "rating", e.target.value)
+                      }
+                      error={skill.editing && errors[index]?.rating}
+                      disabled={!skill.editing}
+                    />
+                    {skill.editing && errors[index]?.rating && (
+                      <Tooltip title="Rating is required" placement="top">
+                        <Info color="error" />
+                      </Tooltip>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton onClick={(e) => handleMenuOpen(e, index, true)}>
+                      <MoreVert />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            : !newSkills?.length && (
+                <TableRow>
+                  <TableCell colSpan={3}>No skills found.</TableCell>
+                </TableRow>
+              )}
+          {newSkills?.map((skill, index) => (
             <TableRow key={index}>
               <TableCell>
                 <CustomTextField
-                  value={skill?.name}
+                  value={skill.name}
                   onChange={(e) =>
-                    handleChange(index, "name", e.target.value, true)
+                    handleChange(index, "name", e.target.value, false)
                   }
                   onBlur={(e) => handleBlur(index, "name", e.target.value)}
                   error={skill.editing && errors[index]?.name}
@@ -145,18 +195,15 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                 />
                 {skill.editing && errors[index]?.name && (
                   <Tooltip title="Skill name is required" placement="top">
-                    <Info
-                      color="error"
-                      sx={{ ml: 1, verticalAlign: "middle" }}
-                    />
+                    <Info color="error" />
                   </Tooltip>
                 )}
               </TableCell>
               <TableCell>
                 <CustomTextField
-                  value={skill?.rating}
+                  value={skill.rating}
                   onChange={(e) =>
-                    handleChange(index, "rating", e.target.value, true)
+                    handleChange(index, "rating", e.target.value, false)
                   }
                   onBlur={(e) => handleBlur(index, "rating", e.target.value)}
                   error={skill.editing && errors[index]?.rating}
@@ -164,79 +211,19 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                 />
                 {skill.editing && errors[index]?.rating && (
                   <Tooltip title="Rating is required" placement="top">
-                    <Info
-                      color="error"
-                      sx={{ ml: 1, verticalAlign: "middle" }}
-                    />
+                    <Info color="error" />
                   </Tooltip>
                 )}
               </TableCell>
               <TableCell>
-                <IconButton
-                  onClick={(e) => handleMenuOpen(e, index, true)}
-                  data-testid={`skill-actions-button-${index}`}
-                >
+                <IconButton onClick={(e) => handleMenuOpen(e, index, false)}>
                   <MoreVert />
                 </IconButton>
               </TableCell>
             </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={3}>No skills found.</TableCell>
-          </TableRow>
-        )}
-        {newSkills?.map((skill, index) => (
-          <TableRow key={index}>
-            <TableCell>
-              <CustomTextField
-                value={skill.name}
-                onChange={(e) =>
-                  handleChange(index, "name", e.target.value, false)
-                }
-                onBlur={(e) => handleBlur(index, "name", e.target.value)}
-                error={skill.editing && errors[index]?.name}
-                disabled={!skill.editing}
-                inputProps={{
-                  "data-testid": `new-skill-input-name-${index * 2}`,
-                }}
-              />
-              {skill.editing && errors[index]?.name && (
-                <Tooltip title="Skill name is required" placement="top">
-                  <Info color="error" sx={{ ml: 1, verticalAlign: "middle" }} />
-                </Tooltip>
-              )}
-            </TableCell>
-            <TableCell>
-              <CustomTextField
-                value={skill.rating}
-                onChange={(e) =>
-                  handleChange(index, "rating", e.target.value, false)
-                }
-                onBlur={(e) => handleBlur(index, "rating", e.target.value)}
-                error={skill.editing && errors[index]?.rating}
-                disabled={!skill.editing}
-                inputProps={{
-                  "data-testid": `new-skill-input-rating-${index * 2}`,
-                }}
-              />
-              {skill.editing && errors[index]?.rating && (
-                <Tooltip title="Rating is required" placement="top">
-                  <Info color="error" sx={{ ml: 1, verticalAlign: "middle" }} />
-                </Tooltip>
-              )}
-            </TableCell>
-            <TableCell>
-              <IconButton
-                onClick={(e) => handleMenuOpen(e, index, false)}
-                data-testid={`skill-actions-button-${index}`}
-              >
-                <MoreVert />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+          ))}
+        </TableBody>
+      </Table>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -262,7 +249,6 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                   ? handleUpdateSkill()
                   : handleEditSkill()
               }
-              data-testid={`skill-actions-edit-${currentSkillType}-${currentSkillIndex}`}
             >
               {currentSkillType === "existing"
                 ? filteredSkills[currentSkillIndex]?.editing
@@ -272,16 +258,11 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                 ? "Update"
                 : "Edit"}
             </MenuItem>
-            <MenuItem
-              onClick={handleDeleteSkill}
-              data-testid={`skill-actions-delete-${currentSkillType}-${currentSkillIndex}`}
-            >
-              Delete
-            </MenuItem>
+            <MenuItem onClick={handleDeleteSkill}>Delete</MenuItem>
           </>
         )}
       </Menu>
-    </Table>
+    </Paper>
   );
 };
 

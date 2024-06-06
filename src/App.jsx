@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAvatarsApi } from "./redux/slices/avatarSlice";
 import ErrorComponent from "./utils/ErrorComponent";
 
-// left over items validation and testing and refactoring and deploying
 const App = () => {
   const dispatch = useDispatch();
   const avatars = useSelector((state) => state?.avatars?.avatars);
