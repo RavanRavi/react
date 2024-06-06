@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import SkillTable from "./SkillTable";
 import "@testing-library/jest-dom";
-import { deleteSkill, updateSkill } from "../../redux/slices/avatarSlice";
 
 jest.mock("../../redux/slices/avatarSlice");
 

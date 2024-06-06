@@ -1,11 +1,8 @@
-// tests/AvatarCard.test.js
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import AvatarCard from "./AvatarCard"; // Adjust the import based on your project's structure
-import CustomButton from "../../utils/CustomButton";
+import AvatarCard from "./AvatarCard";
 
-// Mock the CustomButton component
 jest.mock("../../utils/CustomButton", () => ({ text, onClick }) => (
   <button onClick={onClick}>{text}</button>
 ));

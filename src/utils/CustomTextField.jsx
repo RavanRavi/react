@@ -6,6 +6,9 @@ const CustomTextField = ({ errorText, ...props }) => (
     {...props}
     error={!!errorText}
     helperText={errorText}
+    InputLabelProps={{
+      style: { color: "#000" },
+    }}
     sx={{
       "& .MuiOutlinedInput-root": {
         borderRadius: 8,
@@ -19,10 +22,7 @@ const CustomTextField = ({ errorText, ...props }) => (
           borderColor: "#888",
         },
       },
-      "& .MuiFormHelperText-root": {
-        color: "#888",
-      },
-      "& .MuiInputLabel-outlined": {
+      "& .MuiInputLabel-root": {
         color: "#000",
       },
     }}

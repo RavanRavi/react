@@ -1,19 +1,18 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { Info, MoreVert } from "@mui/icons-material";
 import {
+  IconButton,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  IconButton,
-  TextField,
-  Menu,
-  MenuItem,
-  Tooltip,
+  Tooltip
 } from "@mui/material";
-import { MoreVert, Info } from "@mui/icons-material";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { deleteSkill, updateSkill } from "../../redux/slices/avatarSlice";
 import CustomTextField from "../../utils/CustomTextField";
 

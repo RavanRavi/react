@@ -1,4 +1,3 @@
-// src/mockData/avatars.js
 
 import johnDoeImage from "../assets/images.jpg";
 import Two from "../assets/Two.jpg";
@@ -11,7 +10,7 @@ const avatars = [
   {
     id: 1,
     name: "John Doe",
-    image: johnDoeImage, // Use the imported image directly
+    image: johnDoeImage,
     skills: [
       { name: "JavaScript", rating: "Advanced" },
       { name: "React", rating: "Intermediate" },
