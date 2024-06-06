@@ -7,15 +7,23 @@ const CustomTextField = ({ errorText, ...props }) => (
     error={!!errorText}
     helperText={errorText}
     sx={{
-      borderRadius: 8,
       "& .MuiOutlinedInput-root": {
         borderRadius: 8,
-        "&:hover": {
-          borderColor: "rgba(0, 0, 0, 0.4)",
+        "& fieldset": {
+          borderColor: "#888",
         },
-        "&.Mui-focused": {
-          borderColor: "#1976d2",
+        "&:hover fieldset": {
+          borderColor: "#888",
         },
+        "&.Mui-focused fieldset": {
+          borderColor: "#888",
+        },
+      },
+      "& .MuiFormHelperText-root": {
+        color: "#888",
+      },
+      "& .MuiInputLabel-outlined": {
+        color: "#000",
       },
     }}
   />

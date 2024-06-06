@@ -109,13 +109,17 @@ const EditProfileModal = ({ avatar, onClose }) => {
             <div style={{ marginTop: "20px", textAlign: "center" }}>
               <Button
                 variant="contained"
-                color="primary"
                 onClick={handleAddSkill}
                 sx={{
                   borderRadius: 8,
                   textTransform: "none",
                   fontWeight: "bold",
-                  opacity: 0.9, // Adjust opacity
+                  backgroundColor: "#000",
+                  color: "#fff",
+                  boxShadow: "0 3px 5px rgba(0, 0, 0, 0.2)",
+                  "&:hover": {
+                    backgroundColor: "#333",
+                  },
                 }}
                 style={{ marginTop: "10px", width: "100%" }}
                 data-testid="add-skill-button"
