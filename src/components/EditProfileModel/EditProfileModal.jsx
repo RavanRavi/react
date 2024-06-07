@@ -14,14 +14,16 @@ import CustomButton from "../../utils/CustomButton";
 import CustomTextField from "../../utils/CustomTextField";
 import ModalHeader from "../../utils/ModalHeader";
 import SkillTable from "../SkillTable/SkillTable";
+import { useTranslation } from "react-i18next";
 
 const EditProfileModal = ({ avatar, onClose }) => {
   const dispatch = useDispatch();
-  const avatars = useSelector((state) => state.avatars.avatars);
+  const avatars = useSelector((state) => state?.avatars?.avatars);
   const [searchType, setSearchType] = useState("skill");
   const [searchQuery, setSearchQuery] = useState("");
   const [newSkills, setNewSkills] = useState([]);
 
+  const { t } = useTranslation();
   const filteredSkills =
     avatars
       .find((a) => a.id === avatar.id)
@@ -37,7 +39,6 @@ const EditProfileModal = ({ avatar, onClose }) => {
   };
 
   const handleApply = () => {
-    // Update the Redux store with new skills
     dispatch(updateSkillsInStore({ avatarId: avatar.id, newSkills }));
     onClose();
   };
@@ -61,7 +62,7 @@ const EditProfileModal = ({ avatar, onClose }) => {
       data-testid="edit-profile-modal"
     >
       {" "}
-      <ModalHeader title="Edit Profile" onClose={onClose} />
+      <ModalHeader title={t("Edit Profile")} onClose={onClose} />
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
@@ -76,7 +77,7 @@ const EditProfileModal = ({ avatar, onClose }) => {
               <Grid item xs={6}>
                 <CustomTextField
                   fullWidth
-                  label="Search Skill"
+                  label={t("Search Skill")}
                   variant="outlined"
                   margin="normal"
                   value={searchQuery}
@@ -88,15 +89,15 @@ const EditProfileModal = ({ avatar, onClose }) => {
                 <CustomTextField
                   fullWidth
                   select
-                  label="Select Skill/Rating"
+                  label={t("Select Skill/Rating")}
                   variant="outlined"
                   margin="normal"
                   value={searchType}
                   onChange={(e) => setSearchType(e.target.value)}
                   inputProps={{ "data-testid": "select-skill-rating" }}
                 >
-                  <MenuItem value="skill">Skill</MenuItem>
-                  <MenuItem value="rating">Rating</MenuItem>
+                  <MenuItem value="skill">{t("Skill")}</MenuItem>
+                  <MenuItem value="rating">{t("Rating")}</MenuItem>
                 </CustomTextField>
               </Grid>
             </Grid>
@@ -124,22 +125,22 @@ const EditProfileModal = ({ avatar, onClose }) => {
                 style={{ marginTop: "10px", width: "100%" }}
                 data-testid="add-skill-button"
               >
-                Add Skill
+                {t("Add Skill")}
               </Button>
             </div>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <CustomButton text="Cancel" onClick={handleCancel} />
+        <CustomButton text={t("Cancel")} onClick={handleCancel} />
         {hasEmptyFields && (
           <Tooltip
-            title="Please fill in all fields before applying"
+            title={t("Please fill in all fields before applying")}
             placement="top"
           >
             <div>
               <CustomButton
-                text="Apply"
+                text={t("Apply")}
                 onClick={handleApply}
                 disabled={hasEmptyFields}
               />
@@ -148,7 +149,7 @@ const EditProfileModal = ({ avatar, onClose }) => {
         )}
         {!hasEmptyFields && (
           <CustomButton
-            text="Apply"
+            text={t("Apply")}
             onClick={handleApply}
             disabled={hasEmptyFields}
           />

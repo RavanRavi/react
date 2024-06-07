@@ -4,6 +4,13 @@ import EditProfileModal from "./EditProfileModal";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import "@testing-library/jest-dom";
+import { useTranslation } from "react-i18next";
+
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+  }),
+}));
 
 const mockStore = configureStore([]);
 
@@ -51,14 +58,15 @@ describe("Given EditProfileModal", () => {
     expect(screen.getByRole("button", { name: "Apply" })).toBeInTheDocument();
   });
 
-  test("Then adds a new skill when the 'Add Skill' button is clicked", () => {
+  test("adds a new skill when 'Add Skill' button is clicked", async () => {
     render(
       <Provider store={store}>
         <EditProfileModal avatar={store.getState().avatars.avatars[0]} />
       </Provider>
     );
+
     fireEvent.click(screen.getByTestId("add-skill-button"));
-    expect(screen.getByTestId("new-skill-input-name-0")).toBeInTheDocument();
-    expect(screen.getByTestId("new-skill-input-rating-0")).toBeInTheDocument();
+    expect(screen.getByLabelText("Name")).toBeInTheDocument();
+    expect(screen.getByLabelText("Rating")).toBeInTheDocument();
   });
 });

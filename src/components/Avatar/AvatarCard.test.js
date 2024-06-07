@@ -2,6 +2,13 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import AvatarCard from "./AvatarCard";
+import { useTranslation } from "react-i18next";
+
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+  }),
+}));
 
 jest.mock("../../utils/CustomButton", () => ({ text, onClick }) => (
   <button onClick={onClick}>{text}</button>

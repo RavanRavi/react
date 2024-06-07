@@ -4,9 +4,21 @@ import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import SkillTable from "./SkillTable";
 import "@testing-library/jest-dom";
+import * as avatarSlice from "../../redux/slices/avatarSlice";
 
-jest.mock("../../redux/slices/avatarSlice");
+import { useTranslation } from "react-i18next";
 
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+  }),
+}));
+
+jest.mock("../../redux/slices/avatarSlice", () => ({
+  ...jest.requireActual("../../redux/slices/avatarSlice"),
+  updateSkill: jest.fn(),
+  editSkill: jest.fn(),
+}));
 const mockStore = configureStore([]);
 
 describe("SkillTable component", () => {
@@ -31,7 +43,8 @@ describe("SkillTable component", () => {
     ];
 
     newSkills = [{ name: "", rating: "", editing: false }];
-
+    avatarSlice?.updateSkill?.mockClear();
+    avatarSlice?.editSkill?.mockClear();
     setNewSkills = jest.fn();
   });
 
@@ -62,10 +75,10 @@ describe("SkillTable component", () => {
       </Provider>
     );
 
-    const actionButton = screen.getAllByTestId(/^skill-actions-button-/)[2];
+    const actionButton = screen.getByTestId("skill-actions-button-new-0");
     fireEvent.click(actionButton);
 
-    const deleteButton = screen.getByTestId("skill-actions-delete-new-0");
+    const deleteButton = screen.getByTestId("skill-new-delete-button-0");
     fireEvent.click(deleteButton);
 
     expect(setNewSkills).toHaveBeenCalledWith([]);

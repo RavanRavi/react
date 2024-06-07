@@ -5,6 +5,8 @@ import EditProfileModal from "./components/EditProfileModel/EditProfileModal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAvatarsApi } from "./redux/slices/avatarSlice";
 import ErrorComponent from "./utils/ErrorComponent";
+import LanguageSelector from "./components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -12,6 +14,8 @@ const App = () => {
   const loading = useSelector((state) => state?.avatars?.loading);
   const error = useSelector((state) => state?.avatars.error);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(fetchAvatarsApi());
@@ -34,15 +38,26 @@ const App = () => {
 
   return (
     <Container>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        margin={5}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
       >
-        Applicant Profile List
-      </Typography>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          align="center"
+          style={{ marginBottom: "0" }}
+        >
+          {t("Applicant Profile List")}
+        </Typography>
+        <LanguageSelector />
+      </div>
+
       <Grid container spacing={4}>
         {avatars.map((avatar) => (
           <Grid item key={avatar.id} xs={12} sm={6} md={4}>

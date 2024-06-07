@@ -9,16 +9,17 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteSkill, updateSkill } from "../../redux/slices/avatarSlice";
 import CustomTextField from "../../utils/CustomTextField";
+import { useTranslation } from "react-i18next";
 
 const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
   const dispatch = useDispatch();
-
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentSkillIndex, setCurrentSkillIndex] = useState(null);
   const [currentSkillType, setCurrentSkillType] = useState(null);
@@ -125,9 +126,9 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
       <Table data-testid="skill-table">
         <TableHead>
           <TableRow>
-            <TableCell>Skill</TableCell>
-            <TableCell>Rating</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell>{t("Skill")}</TableCell>
+            <TableCell>{t("Rating")}</TableCell>
+            <TableCell>{t("Actions")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -145,7 +146,10 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                       disabled={!skill.editing}
                     />
                     {skill.editing && errors[index]?.name && (
-                      <Tooltip title="Skill name is required" placement="top">
+                      <Tooltip
+                        title={t("Skill name is required")}
+                        placement="top"
+                      >
                         <Info color="error" />
                       </Tooltip>
                     )}
@@ -163,13 +167,16 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                       disabled={!skill.editing}
                     />
                     {skill.editing && errors[index]?.rating && (
-                      <Tooltip title="Rating is required" placement="top">
+                      <Tooltip title={t("Rating is required")} placement="top">
                         <Info color="error" />
                       </Tooltip>
                     )}
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={(e) => handleMenuOpen(e, index, true)}>
+                    <IconButton
+                      data-testid={`skill-actions-button-${index}`}
+                      onClick={(e) => handleMenuOpen(e, index, true)}
+                    >
                       <MoreVert />
                     </IconButton>
                   </TableCell>
@@ -177,7 +184,7 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
               ))
             : !newSkills?.length && (
                 <TableRow>
-                  <TableCell colSpan={3}>No skills found.</TableCell>
+                  <TableCell colSpan={3}>{t("No skills found")}</TableCell>
                 </TableRow>
               )}
           {newSkills?.map((skill, index) => (
@@ -185,6 +192,7 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
               <TableCell>
                 <CustomTextField
                   value={skill.name}
+                  aria-label="Name"
                   onChange={(e) =>
                     handleChange(index, "name", e.target.value, false)
                   }
@@ -193,7 +201,7 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                   disabled={!skill.editing}
                 />
                 {skill.editing && errors[index]?.name && (
-                  <Tooltip title="Skill name is required" placement="top">
+                  <Tooltip title={t("Skill name is required")} placement="top">
                     <Info color="error" />
                   </Tooltip>
                 )}
@@ -201,6 +209,7 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
               <TableCell>
                 <CustomTextField
                   value={skill.rating}
+                  aria-label="Rating"
                   onChange={(e) =>
                     handleChange(index, "rating", e.target.value, false)
                   }
@@ -209,13 +218,16 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
                   disabled={!skill.editing}
                 />
                 {skill.editing && errors[index]?.rating && (
-                  <Tooltip title="Rating is required" placement="top">
+                  <Tooltip title={t("Rating is required")} placement="top">
                     <Info color="error" />
                   </Tooltip>
                 )}
               </TableCell>
               <TableCell>
-                <IconButton onClick={(e) => handleMenuOpen(e, index, false)}>
+                <IconButton
+                  data-testid={`skill-actions-button-new-${index}`}
+                  onClick={(e) => handleMenuOpen(e, index, false)}
+                >
                   <MoreVert />
                 </IconButton>
               </TableCell>
@@ -239,6 +251,7 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
         {currentSkillType && (
           <>
             <MenuItem
+              data-testid={`skill-${currentSkillType}-edit-button-${currentSkillIndex}`}
               onClick={() =>
                 currentSkillType === "existing"
                   ? filteredSkills[currentSkillIndex]?.editing
@@ -251,13 +264,18 @@ const SkillTable = ({ avatarId, newSkills, setNewSkills, filteredSkills }) => {
             >
               {currentSkillType === "existing"
                 ? filteredSkills[currentSkillIndex]?.editing
-                  ? "Update"
-                  : "Edit"
+                  ? t("Update")
+                  : t("Edit")
                 : newSkills[currentSkillIndex]?.editing
-                ? "Update"
-                : "Edit"}
+                ? t("Update")
+                : t("Edit")}
             </MenuItem>
-            <MenuItem onClick={handleDeleteSkill}>Delete</MenuItem>
+            <MenuItem
+              data-testid={`skill-${currentSkillType}-delete-button-${currentSkillIndex}`}
+              onClick={handleDeleteSkill}
+            >
+              {t("Delete")}
+            </MenuItem>
           </>
         )}
       </Menu>

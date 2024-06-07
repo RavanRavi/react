@@ -1,0 +1,21 @@
+{
+  "Applicant Profile List": "Liste des profils des candidats",
+  "Skill": "Compétence",
+  "Skills": "Compétences",
+  "Rating": "Évaluation",
+  "Actions": "Actions",
+  "Edit": "Modifier",
+  "Delete": "Supprimer",
+  "Update": "Mettre à jour",
+  "No skills found.": "Aucune compétence trouvée.",
+  "Rating is required": "L'évaluation est requise",
+  "No skills to display": "Aucune compétence à afficher",
+  "Edit Profile": "Modifier le profil",
+  "Skill name is required": "Le nom de la compétence est requis",
+  "Search Skill": "Rechercher une compétence",
+  "Select Skill/Rating": "Sélectionner une compétence/évaluation",
+  "Add Skill": "Ajouter une compétence",
+  "Please fill in all fields before applying": "Veuillez remplir tous les champs avant de postuler",
+  "Cancel": "Annuler",
+  "Apply": "Appliquer"
+}
