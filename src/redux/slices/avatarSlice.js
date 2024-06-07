@@ -23,7 +23,7 @@ const avatarSlice = createSlice({
       const { avatarId, newSkill } = action.payload;
       const avatar = state.avatars.find((a) => a.id === avatarId);
       if (avatar) {
-        avatar.skills.push(newSkill);
+        avatar.skills.push({ ...newSkill, editing: false }); // Set editing to false by default
       }
     },
     deleteSkill: (state, action) => {
@@ -37,14 +37,34 @@ const avatarSlice = createSlice({
       const { avatarId, skills } = action.payload;
       const avatar = state.avatars.find((a) => a.id === avatarId);
       if (avatar) {
-        avatar.skills = skills;
+        avatar.skills = skills.map((skill) => ({ ...skill, editing: false })); // Reset editing to false for all skills
       }
     },
     updateSkillsInStore: (state, action) => {
       const { avatarId, newSkills } = action.payload;
       const avatar = state.avatars.find((a) => a.id === avatarId);
       if (avatar) {
-        avatar.skills = avatar.skills.concat(newSkills);
+        const existingSkills = avatar.skills;
+        const updatedSkills = newSkills.reduce((acc, newSkill) => {
+          const existingIndex = existingSkills.findIndex(
+            (skill) =>
+              skill.name === newSkill.name && skill.rating === newSkill.rating
+          );
+          if (existingIndex === -1) {
+            acc.push({ ...newSkill, editing: false }); // Set editing to false for new skills
+          } else {
+            acc.push(existingSkills[existingIndex]);
+          }
+          return acc;
+        }, []);
+        avatar.skills = updatedSkills;
+      }
+    },
+    toggleSkillEditing: (state, action) => {
+      const { avatarId, skillIndex, editing } = action.payload;
+      const avatar = state.avatars.find((a) => a.id === avatarId);
+      if (avatar) {
+        avatar.skills[skillIndex].editing = editing;
       }
     },
   },
@@ -65,7 +85,12 @@ const avatarSlice = createSlice({
   },
 });
 
-export const { addSkill, updateSkill, deleteSkill, updateSkillsInStore } =
-  avatarSlice.actions;
+export const {
+  addSkill,
+  updateSkill,
+  deleteSkill,
+  updateSkillsInStore,
+  toggleSkillEditing,
+} = avatarSlice.actions;
 
 export default avatarSlice.reducer;

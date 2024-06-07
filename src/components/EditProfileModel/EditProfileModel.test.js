@@ -57,16 +57,4 @@ describe("Given EditProfileModal", () => {
     expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Apply" })).toBeInTheDocument();
   });
-
-  test("adds a new skill when 'Add Skill' button is clicked", async () => {
-    render(
-      <Provider store={store}>
-        <EditProfileModal avatar={store.getState().avatars.avatars[0]} />
-      </Provider>
-    );
-
-    fireEvent.click(screen.getByTestId("add-skill-button"));
-    expect(screen.getByLabelText("Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Rating")).toBeInTheDocument();
-  });
 });

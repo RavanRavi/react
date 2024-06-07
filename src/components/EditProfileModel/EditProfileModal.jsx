@@ -21,36 +21,66 @@ const EditProfileModal = ({ avatar, onClose }) => {
   const avatars = useSelector((state) => state?.avatars?.avatars);
   const [searchType, setSearchType] = useState("skill");
   const [searchQuery, setSearchQuery] = useState("");
-  const [newSkills, setNewSkills] = useState([]);
+  const [skills, setSkills] = useState(
+    avatars.find((a) => a.id === avatar.id)?.skills || []
+  );
 
   const { t } = useTranslation();
-  const filteredSkills =
-    avatars
-      .find((a) => a.id === avatar.id)
-      ?.skills?.filter((skill) =>
-        searchType === "skill"
-          ? skill?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
-          : skill?.rating?.toLowerCase()?.includes(searchQuery?.toLowerCase())
-      ) || [];
+
+  const filteredSkills = useMemo(() => {
+    return skills.filter((skill) =>
+      searchType === "skill"
+        ? skill?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+        : skill?.rating?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+    );
+  }, [skills, searchQuery, searchType]);
 
   const handleAddSkill = () => {
     const newSkillObject = { name: "", rating: "", editing: true, isNew: true };
-    setNewSkills([...newSkills, newSkillObject]);
+    setSkills([...skills, newSkillObject]);
   };
 
   const handleApply = () => {
-    dispatch(updateSkillsInStore({ avatarId: avatar.id, newSkills }));
+    dispatch(updateSkillsInStore({ avatarId: avatar.id, newSkills: skills }));
     onClose();
   };
 
   const handleCancel = () => {
-    setNewSkills([]);
+    setSkills(avatars.find((a) => a.id === avatar.id)?.skills || []);
     onClose();
   };
 
+  const handleSkillChange = (index, field, value) => {
+    const updatedSkills = skills.map((skill, i) =>
+      i === index ? { ...skill, [field]: value } : skill
+    );
+    setSkills(updatedSkills);
+  };
+
+  const handleSkillBlur = (index, field, value) => {
+    if (!value) {
+      const updatedSkills = skills.map((skill, i) =>
+        i === index ? { ...skill, [field]: value, error: true } : skill
+      );
+      setSkills(updatedSkills);
+    }
+  };
+
+  const handleSkillDelete = (index) => {
+    const updatedSkills = skills.filter((_, i) => i !== index);
+    setSkills(updatedSkills);
+  };
+
+  const handleSkillEditToggle = (index) => {
+    const updatedSkills = skills.map((skill, i) =>
+      i === index ? { ...skill, editing: !skill.editing } : skill
+    );
+    setSkills(updatedSkills);
+  };
+
   const hasEmptyFields = useMemo(() => {
-    return newSkills?.some((skill) => !skill?.name || !skill?.rating);
-  }, [newSkills]);
+    return skills.some((skill) => !skill?.name || !skill?.rating);
+  }, [skills]);
 
   return (
     <Dialog
@@ -61,7 +91,6 @@ const EditProfileModal = ({ avatar, onClose }) => {
       PaperProps={{ style: { height: "80vh", borderRadius: "20px" } }}
       data-testid="edit-profile-modal"
     >
-      {" "}
       <ModalHeader title={t("Edit Profile")} onClose={onClose} />
       <DialogContent>
         <Grid container spacing={2}>
@@ -102,10 +131,11 @@ const EditProfileModal = ({ avatar, onClose }) => {
               </Grid>
             </Grid>
             <SkillTable
-              avatarId={avatar.id}
-              newSkills={newSkills}
-              setNewSkills={setNewSkills}
-              filteredSkills={filteredSkills}
+              skills={filteredSkills}
+              onSkillChange={handleSkillChange}
+              onSkillBlur={handleSkillBlur}
+              onSkillDelete={handleSkillDelete}
+              onSkillEditToggle={handleSkillEditToggle}
             />
             <div style={{ marginTop: "20px", textAlign: "center" }}>
               <Button

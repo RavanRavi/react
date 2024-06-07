@@ -6,33 +6,25 @@ import SkillTable from "./SkillTable";
 import "@testing-library/jest-dom";
 import * as avatarSlice from "../../redux/slices/avatarSlice";
 
-import { useTranslation } from "react-i18next";
-
-jest.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (key) => key,
-  }),
-}));
-
 jest.mock("../../redux/slices/avatarSlice", () => ({
   ...jest.requireActual("../../redux/slices/avatarSlice"),
   updateSkill: jest.fn(),
   editSkill: jest.fn(),
+  deleteSkill: jest.fn(),
 }));
+
 const mockStore = configureStore([]);
 
 describe("SkillTable component", () => {
   let store;
   let filteredSkills;
-  let newSkills;
-  let setNewSkills;
 
   beforeEach(() => {
     store = mockStore({
       avatar: {
         skills: [
-          { name: "JavaScript", rating: "Advanced" },
-          { name: "React", rating: "Intermediate" },
+          { name: "JavaScript", rating: "Advanced", editing: false },
+          { name: "React", rating: "Intermediate", editing: false },
         ],
       },
     });
@@ -42,20 +34,20 @@ describe("SkillTable component", () => {
       { name: "React", rating: "Intermediate", editing: false },
     ];
 
-    newSkills = [{ name: "", rating: "", editing: false }];
-    avatarSlice?.updateSkill?.mockClear();
-    avatarSlice?.editSkill?.mockClear();
-    setNewSkills = jest.fn();
+    avatarSlice.updateSkill.mockClear();
+    avatarSlice.editSkill.mockClear();
+    avatarSlice.deleteSkill.mockClear();
   });
 
   test("renders existing skills correctly", () => {
     render(
       <Provider store={store}>
         <SkillTable
-          avatarId={123}
-          filteredSkills={filteredSkills}
-          newSkills={newSkills}
-          setNewSkills={setNewSkills}
+          skills={filteredSkills}
+          onSkillChange={jest.fn()}
+          onSkillBlur={jest.fn()}
+          onSkillDelete={jest.fn()}
+          onSkillEditToggle={jest.fn()}
         />
       </Provider>
     );
@@ -63,24 +55,33 @@ describe("SkillTable component", () => {
     expect(screen.getByDisplayValue("React")).toBeInTheDocument();
   });
 
-  test("opens menu and deletes a new skill", () => {
+  test("opens menu and deletes a skill", () => {
+    // Mock avatarSlice.deleteSkill
+    avatarSlice.deleteSkill.mockImplementation((index) => {
+      // Mock implementation of deleteSkill, can be empty as we are just testing the invocation
+    });
+
     render(
       <Provider store={store}>
         <SkillTable
-          avatarId={123}
-          filteredSkills={filteredSkills}
-          newSkills={newSkills}
-          setNewSkills={setNewSkills}
+          skills={filteredSkills}
+          onSkillChange={jest.fn()}
+          onSkillBlur={jest.fn()}
+          onSkillDelete={avatarSlice.deleteSkill} // Pass the mock function directly
+          onSkillEditToggle={jest.fn()}
         />
       </Provider>
     );
 
-    const actionButton = screen.getByTestId("skill-actions-button-new-0");
-    fireEvent.click(actionButton);
+    // Find the MoreVert icon button and click it to open the menu
+    const moreVertButton = screen.getAllByTestId("skill-actions-button-0")[0];
+    fireEvent.click(moreVertButton);
 
-    const deleteButton = screen.getByTestId("skill-new-delete-button-0");
+    // Find the delete option in the menu and click it
+    const deleteButton = screen.getByRole("menuitem", { name: /Delete/ });
     fireEvent.click(deleteButton);
 
-    expect(setNewSkills).toHaveBeenCalledWith([]);
+    // Check if onSkillDelete has been called
+    expect(avatarSlice.deleteSkill).toHaveBeenCalledTimes(1);
   });
 });
