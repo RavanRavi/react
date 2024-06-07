@@ -56,10 +56,7 @@ describe("SkillTable component", () => {
   });
 
   test("opens menu and deletes a skill", () => {
-    // Mock avatarSlice.deleteSkill
-    avatarSlice.deleteSkill.mockImplementation((index) => {
-      // Mock implementation of deleteSkill, can be empty as we are just testing the invocation
-    });
+    avatarSlice.deleteSkill.mockImplementation((index) => {});
 
     render(
       <Provider store={store}>
@@ -67,21 +64,42 @@ describe("SkillTable component", () => {
           skills={filteredSkills}
           onSkillChange={jest.fn()}
           onSkillBlur={jest.fn()}
-          onSkillDelete={avatarSlice.deleteSkill} // Pass the mock function directly
+          onSkillDelete={avatarSlice.deleteSkill}
           onSkillEditToggle={jest.fn()}
         />
       </Provider>
     );
 
-    // Find the MoreVert icon button and click it to open the menu
     const moreVertButton = screen.getAllByTestId("skill-actions-button-0")[0];
     fireEvent.click(moreVertButton);
 
-    // Find the delete option in the menu and click it
     const deleteButton = screen.getByRole("menuitem", { name: /Delete/ });
     fireEvent.click(deleteButton);
 
-    // Check if onSkillDelete has been called
     expect(avatarSlice.deleteSkill).toHaveBeenCalledTimes(1);
+  });
+
+  test("opens menu and edits a skill", () => {
+    avatarSlice.editSkill.mockImplementation((index) => {});
+
+    render(
+      <Provider store={store}>
+        <SkillTable
+          skills={filteredSkills}
+          onSkillChange={jest.fn()}
+          onSkillBlur={jest.fn()}
+          onSkillDelete={jest.fn()}
+          onSkillEditToggle={avatarSlice.editSkill}
+        />
+      </Provider>
+    );
+
+    const moreVertButton = screen.getAllByTestId("skill-actions-button-0")[0];
+    fireEvent.click(moreVertButton);
+
+    const editButton = screen.getByRole("menuitem", { name: /Edit/ });
+    fireEvent.click(editButton);
+
+    expect(avatarSlice.editSkill).toHaveBeenCalledTimes(1);
   });
 });
