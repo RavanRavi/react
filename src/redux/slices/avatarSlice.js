@@ -44,11 +44,12 @@ const avatarSlice = createSlice({
       const { avatarId, newSkills } = action.payload;
       const avatar = state.avatars.find((a) => a.id === avatarId);
       if (avatar) {
-        const existingSkills = avatar.skills;
-        const updatedSkills = newSkills.reduce((acc, newSkill) => {
+        const existingSkills = avatar?.skills;
+        const updatedSkills = newSkills?.reduce((acc, newSkill) => {
           const existingIndex = existingSkills.findIndex(
             (skill) =>
-              skill.name === newSkill.name && skill.rating === newSkill.rating
+              skill.name === newSkill?.name &&
+              skill?.rating === newSkill?.rating
           );
           if (existingIndex === -1) {
             acc.push({ ...newSkill, editing: false }); // Set editing to false for new skills
@@ -58,13 +59,6 @@ const avatarSlice = createSlice({
           return acc;
         }, []);
         avatar.skills = updatedSkills;
-      }
-    },
-    toggleSkillEditing: (state, action) => {
-      const { avatarId, skillIndex, editing } = action.payload;
-      const avatar = state.avatars.find((a) => a.id === avatarId);
-      if (avatar) {
-        avatar.skills[skillIndex].editing = editing;
       }
     },
   },

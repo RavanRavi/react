@@ -21,6 +21,7 @@ const SkillTable = ({
   onSkillBlur,
   onSkillDelete,
   onSkillEditToggle,
+  setSkills,
 }) => {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -36,13 +37,22 @@ const SkillTable = ({
     setCurrentSkillIndex(null);
   };
 
-  const handleEditSkillClick = () => {
+  const handleSkillAction = (actionType) => {
     const currentSkill = skills[currentSkillIndex];
     if (!currentSkill.name || !currentSkill.rating) {
       alert("Skill name and rating cannot be empty.");
       return;
     }
     onSkillEditToggle(currentSkillIndex);
+    if (actionType === "apply" || actionType === "update") {
+      const updatedSkills = [...skills];
+      updatedSkills[currentSkillIndex] = {
+        ...currentSkill,
+        isNew: false,
+        editing: false,
+      };
+      setSkills(updatedSkills);
+    }
     handleMenuClose();
   };
 
@@ -74,7 +84,9 @@ const SkillTable = ({
                     onBlur={(e) => onSkillBlur(index, "name", e.target.value)}
                     error={!skill.name}
                     helperText={!skill.name && t("Skill name is required")}
-                    inputProps={{ "data-testid": `skill-name-${index}` }}
+                    inputProps={{
+                      "data-testid": `skill-name-${index}`,
+                    }}
                     disabled={!skill.editing}
                     aria-label="Name"
                   />
@@ -96,7 +108,9 @@ const SkillTable = ({
                     onBlur={(e) => onSkillBlur(index, "rating", e.target.value)}
                     error={!skill.rating}
                     helperText={!skill.rating && t("Rating is required")}
-                    inputProps={{ "data-testid": `skill-rating-${index}` }}
+                    inputProps={{
+                      "data-testid": `skill-rating-${index}`,
+                    }}
                     disabled={!skill.editing}
                     aria-label="Rating"
                   />
@@ -122,8 +136,22 @@ const SkillTable = ({
                     open={Boolean(anchorEl) && currentSkillIndex === index}
                     onClose={handleMenuClose}
                   >
-                    <MenuItem onClick={handleEditSkillClick}>
-                      {skill.editing ? t("Update") : t("Edit")}
+                    <MenuItem
+                      onClick={() =>
+                        handleSkillAction(
+                          skills[currentSkillIndex]?.isNew
+                            ? "apply"
+                            : skills[currentSkillIndex]?.editing
+                            ? "update"
+                            : "edit"
+                        )
+                      }
+                    >
+                      {skills[currentSkillIndex]?.isNew
+                        ? t("Apply")
+                        : skills[currentSkillIndex]?.editing
+                        ? t("Update")
+                        : t("Edit")}
                     </MenuItem>
                     <MenuItem onClick={handleDeleteSkillClick}>
                       {t("Delete")}

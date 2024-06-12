@@ -15,6 +15,7 @@ import CustomTextField from "../../utils/CustomTextField";
 import ModalHeader from "../../utils/ModalHeader";
 import SkillTable from "../SkillTable/SkillTable";
 import { useTranslation } from "react-i18next";
+// import debounce from "lodash.debounce";
 
 const EditProfileModal = ({ avatar, onClose }) => {
   const dispatch = useDispatch();
@@ -24,6 +25,17 @@ const EditProfileModal = ({ avatar, onClose }) => {
   const [skills, setSkills] = useState(
     avatars.find((a) => a.id === avatar.id)?.skills || []
   );
+
+  // const debouncedSetSearchQuery = useCallback(
+  //   debounce((query) => {
+  //     setSearchQuery(query);
+  //   }, 300),
+  //   []
+  // );
+
+  // const handleSearchChange = (e) => {
+  //   debouncedSetSearchQuery(e.target.value);
+  // };
 
   const { t } = useTranslation();
 
@@ -111,6 +123,7 @@ const EditProfileModal = ({ avatar, onClose }) => {
                   margin="normal"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  // onChange={handleSearchChange}
                   inputProps={{ "data-testid": "search-skill-input" }}
                 />
               </Grid>
@@ -136,6 +149,7 @@ const EditProfileModal = ({ avatar, onClose }) => {
               onSkillBlur={handleSkillBlur}
               onSkillDelete={handleSkillDelete}
               onSkillEditToggle={handleSkillEditToggle}
+              setSkills={setSkills}
             />
             <div style={{ marginTop: "20px", textAlign: "center" }}>
               <Button
